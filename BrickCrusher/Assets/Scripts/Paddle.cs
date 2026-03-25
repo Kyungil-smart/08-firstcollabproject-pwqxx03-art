@@ -17,9 +17,8 @@ public class Paddle : MonoBehaviour
     public TMP_Text scoreText;
     public GameObject Life_01;
     public GameObject Life_02;
-    public GameObject WinPanel;
+    public GameObject victoryPanel;
     public GameObject GameOverPanel;
-    public GameObject PausePanel;
     public AudioSource S_Break;
     public AudioSource S_Eat;
     public AudioSource S_Fail;
