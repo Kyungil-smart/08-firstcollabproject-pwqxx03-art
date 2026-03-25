@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Paddle : MonoBehaviour 
 
@@ -12,10 +13,10 @@ public class Paddle : MonoBehaviour
     public Sprite[] B;
     public GameObject P_Item;
     public SpriteRenderer P_ItemSr;
-    public Text StageText;
-    public Text ScoreText;
-    public GameObject Life0;
-    public GameObject Life1;
+    public TMP_Text stageText;
+    public TMP_Text scoreText;
+    public GameObject Life_01;
+    public GameObject Life_02;
     public GameObject WinPanel;
     public GameObject GameOverPanel;
     public GameObject PausePanel;
