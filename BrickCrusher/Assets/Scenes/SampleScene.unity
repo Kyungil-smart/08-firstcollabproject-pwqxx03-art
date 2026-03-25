@@ -10469,7 +10469,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 464340599}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -3.7261, z: 0}
   m_LocalScale: {x: 0.7, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
@@ -10518,14 +10518,162 @@ MonoBehaviour:
   S_Victory: {fileID: 679879292}
   ItemsTr: {fileID: 136077033}
   BlocksTr: {fileID: 1581569553}
-  BlockCol: []
-  Ball: []
-  BallAni: []
-  BallTr: []
-  BallSr: []
-  BallRg: []
-  PaddleSr: {fileID: 0}
-  PaddleCol: {fileID: 0}
+  BlockCol:
+  - {fileID: 1079788019}
+  - {fileID: 66782275}
+  - {fileID: 242345842}
+  - {fileID: 853518208}
+  - {fileID: 747112134}
+  - {fileID: 1412117897}
+  - {fileID: 224600635}
+  - {fileID: 251022482}
+  - {fileID: 606555607}
+  - {fileID: 164508331}
+  - {fileID: 192556969}
+  - {fileID: 1590597310}
+  - {fileID: 1699867093}
+  - {fileID: 399987312}
+  - {fileID: 581177928}
+  - {fileID: 414825232}
+  - {fileID: 1189209663}
+  - {fileID: 986833647}
+  - {fileID: 482894204}
+  - {fileID: 1447927123}
+  - {fileID: 589280047}
+  - {fileID: 1274472262}
+  - {fileID: 886773089}
+  - {fileID: 759897491}
+  - {fileID: 1626710245}
+  - {fileID: 1411880138}
+  - {fileID: 1818387993}
+  - {fileID: 1114336336}
+  - {fileID: 1667456714}
+  - {fileID: 1672182496}
+  - {fileID: 1316275658}
+  - {fileID: 2026556848}
+  - {fileID: 307654638}
+  - {fileID: 1133017092}
+  - {fileID: 1202424380}
+  - {fileID: 1262761551}
+  - {fileID: 159253470}
+  - {fileID: 709851168}
+  - {fileID: 2052050177}
+  - {fileID: 538283724}
+  - {fileID: 2116282682}
+  - {fileID: 2013596349}
+  - {fileID: 1935795214}
+  - {fileID: 1002190735}
+  - {fileID: 334082103}
+  - {fileID: 302154826}
+  - {fileID: 347797526}
+  - {fileID: 1819840702}
+  - {fileID: 951243697}
+  - {fileID: 1875756260}
+  - {fileID: 1920899084}
+  - {fileID: 1346707449}
+  - {fileID: 1724690249}
+  - {fileID: 1552430284}
+  - {fileID: 601653810}
+  - {fileID: 1375628528}
+  - {fileID: 337924971}
+  - {fileID: 1376591469}
+  - {fileID: 1010186675}
+  - {fileID: 273332900}
+  - {fileID: 82329856}
+  - {fileID: 708353454}
+  - {fileID: 1486789066}
+  - {fileID: 630600734}
+  - {fileID: 2005614260}
+  - {fileID: 520989501}
+  - {fileID: 1502907451}
+  - {fileID: 1293155205}
+  - {fileID: 439244807}
+  - {fileID: 1812286280}
+  - {fileID: 2008835570}
+  - {fileID: 41591310}
+  - {fileID: 1556431635}
+  - {fileID: 1005849300}
+  - {fileID: 1532353752}
+  - {fileID: 826145693}
+  - {fileID: 2060693688}
+  - {fileID: 1881283683}
+  - {fileID: 744016736}
+  - {fileID: 69857665}
+  - {fileID: 380868873}
+  - {fileID: 1526789331}
+  - {fileID: 159656890}
+  - {fileID: 2057110205}
+  - {fileID: 297506995}
+  - {fileID: 1926496324}
+  - {fileID: 587861003}
+  - {fileID: 1516647789}
+  - {fileID: 731447970}
+  - {fileID: 1660321584}
+  - {fileID: 862543774}
+  - {fileID: 543829123}
+  - {fileID: 442134408}
+  - {fileID: 189481128}
+  - {fileID: 1240162150}
+  - {fileID: 1843067413}
+  - {fileID: 221480568}
+  - {fileID: 1929784460}
+  - {fileID: 1949963752}
+  - {fileID: 669576226}
+  - {fileID: 2037442404}
+  - {fileID: 1108915304}
+  - {fileID: 1235436616}
+  - {fileID: 1666687551}
+  - {fileID: 341176528}
+  - {fileID: 1589289310}
+  - {fileID: 1388252200}
+  - {fileID: 165664095}
+  - {fileID: 735854379}
+  - {fileID: 1698506388}
+  - {fileID: 1759935410}
+  - {fileID: 949175874}
+  - {fileID: 981371445}
+  - {fileID: 862438969}
+  - {fileID: 127596542}
+  - {fileID: 2085606431}
+  - {fileID: 625318571}
+  - {fileID: 1276057823}
+  - {fileID: 289227369}
+  - {fileID: 551494038}
+  - {fileID: 1202045150}
+  - {fileID: 1297221543}
+  - {fileID: 955327571}
+  - {fileID: 985375961}
+  - {fileID: 526562291}
+  - {fileID: 1086759433}
+  - {fileID: 607444883}
+  - {fileID: 1228773423}
+  - {fileID: 15458817}
+  - {fileID: 791246836}
+  - {fileID: 1081455138}
+  - {fileID: 1739969879}
+  - {fileID: 532689724}
+  Ball:
+  - {fileID: 1141273228}
+  - {fileID: 2146447831}
+  - {fileID: 370127580}
+  BallAni:
+  - {fileID: 1141273233}
+  - {fileID: 2146447836}
+  - {fileID: 370127585}
+  BallTr:
+  - {fileID: 1141273232}
+  - {fileID: 2146447832}
+  - {fileID: 370127581}
+  BallSr:
+  - {fileID: 1141273231}
+  - {fileID: 2146447835}
+  - {fileID: 370127584}
+  BallRg:
+  - {fileID: 1141273229}
+  - {fileID: 2146447833}
+  - {fileID: 370127582}
+  PaddleSr: {fileID: 464340601}
+  PaddleCol: {fileID: 464340600}
 --- !u!1 &482894203
 GameObject:
   m_ObjectHideFlags: 0
