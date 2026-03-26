@@ -130,6 +130,16 @@ public class Paddle : MonoBehaviour
                 BallRg[0].linearVelocity = Vector2.zero;
                 BallRg[0].AddForce(Vector2.up * ballSpeed);
             }
-        }
+
+            if (Input.GetKeyDown(KeyCode.Space)) StartCoroutine("InfinityLoop")
+        }   
     }
-}
+
+    IEnumerator InfinityLoop()
+    { 
+         while(true)
+        {
+            if (Input.GetMouseButton(0))
+            yield return new WaitForSeconds(0.01f);
+        } 
+    }
