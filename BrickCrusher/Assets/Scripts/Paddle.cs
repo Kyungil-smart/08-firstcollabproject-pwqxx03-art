@@ -68,10 +68,10 @@ public class Paddle : MonoBehaviour
             GameOverPanel.SetActive(false);
 
         if (stageText != null)
-            stageText.text = "STAGE - " + stage;
+            stageText.text = stage.ToString();
 
         if (scoreText != null)
-            scoreText.text = "SCORE " + score;
+            scoreText.text = score.ToString();
     }
 
     void Update()
@@ -108,6 +108,7 @@ public class Paddle : MonoBehaviour
             return;
 
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
         paddleX = Mathf.Clamp(mouseWorldPos.x, -paddleBorder, paddleBorder);
 
         transform.position = new Vector3(paddleX, transform.position.y, transform.position.z);
