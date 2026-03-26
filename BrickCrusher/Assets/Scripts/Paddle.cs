@@ -48,6 +48,7 @@ public class Paddle : MonoBehaviour
     float oldBallSpeed = 300f;
     float paddleBorder = 2.262f;
     float paddleSize = 1.58f;
+    float paddleX;
 
     int combo;
     int score;
@@ -55,7 +56,7 @@ public class Paddle : MonoBehaviour
 
     void Start()
     {
-        Time.timeScale = 1;
+        Time.timeScale = 1f;
 
         if (PausePanel != null)
             PausePanel.SetActive(false);
@@ -85,61 +86,56 @@ public class Paddle : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (PausePanel == null) return;
+            if (PausePanel == null)
+                return;
 
             if (PausePanel.activeSelf)
             {
                 PausePanel.SetActive(false);
-                Time.timeScale = 1;
+                Time.timeScale = 1f;
             }
             else
             {
                 PausePanel.SetActive(true);
-                Time.timeScale = 0;
+                Time.timeScale = 0f;
             }
         }
     }
 
     void MovePaddle()
     {
-        float h = Input.GetAxisRaw("Horizontal");
-        Vector3 pos = transform.position;
+        if (Camera.main == null)
+            return;
 
-        pos.x += h * paddleSpeed * Time.deltaTime;
-        pos.x = Mathf.Clamp(pos.x, -paddleBorder, paddleBorder);
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        paddleX = Mathf.Clamp(mouseWorldPos.x, -paddleBorder, paddleBorder);
 
-        transform.position = pos;
+        transform.position = new Vector3(paddleX, transform.position.y, transform.position.z);
     }
 
     void BallReadyPosition()
     {
-        if (!isStart && BallTr.Length > 0)
+        if (!isStart && BallTr != null && BallTr.Length > 0 && BallTr[0] != null)
         {
-            BallTr[0].position = new Vector3(transform.position.x, transform.position.y + 0.35f, 0f);
+            BallTr[0].position = new Vector3(
+                transform.position.x,
+                transform.position.y + 0.35f,
+                0f
+            );
         }
     }
 
     void StartBall()
     {
-        if (!isStart && Input.GetKeyDown(KeyCode.Space))
+        if (!isStart && Input.GetMouseButtonDown(0))
         {
             isStart = true;
 
-            if (BallRg.Length > 0)
+            if (BallRg != null && BallRg.Length > 0 && BallRg[0] != null)
             {
                 BallRg[0].linearVelocity = Vector2.zero;
                 BallRg[0].AddForce(Vector2.up * ballSpeed);
             }
-
-            if (Input.GetKeyDown(KeyCode.Space)) StartCoroutine("InfinityLoop")
-        }   
+        }
     }
-
-    IEnumerator InfinityLoop()
-    { 
-         while(true)
-        {
-            if (Input.GetMouseButton(0))
-            yield return new WaitForSeconds(0.01f);
-        } 
-    }
+}
