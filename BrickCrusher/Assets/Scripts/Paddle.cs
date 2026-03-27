@@ -51,7 +51,7 @@ public class Paddle : MonoBehaviour
     float oldBallSpeed = 300f;
     float paddleBorder = 2.262f;
     float paddleSize = 1.58f;
-    float paddleX;
+    public float paddleX;
 
     int combo;
     int score;
@@ -157,6 +157,7 @@ public class Paddle : MonoBehaviour
             return;
 
         Vector2 dir = (hitBall.position - transform.position).normalized;
+
         if (dir.y < 0.2f)
             dir.y = 0.2f;
 
@@ -262,30 +263,37 @@ public class Paddle : MonoBehaviour
         if (blockObj == null)
             return;
 
-        switch (blockObj.name)
+        string blockName = blockObj.name;
+
+        if (blockName.StartsWith("HardBlock0"))
         {
-            case "HardBlock0":
-                blockObj.name = "HardBlock1";
-                if (blockSr != null && B.Length > 9)
-                    blockSr.sprite = B[9];
+            blockObj.name = "HardBlock1";
 
-                if (S_HardBreak != null)
-                    S_HardBreak.Play();
-                return;
+            if (blockSr != null && B.Length > 9)
+                blockSr.sprite = B[9];
 
-            case "HardBlock1":
-                blockObj.name = "HardBlock2";
-                if (blockSr != null && B.Length > 10)
-                    blockSr.sprite = B[10];
+            if (S_HardBreak != null)
+                S_HardBreak.Play();
 
-                if (S_HardBreak != null)
-                    S_HardBreak.Play();
-                return;
+            return;
+        }
 
-            case "HardBlock2":
-            case "Block":
-                BreakBlock(blockObj, blockAni);
-                return;
+        if (blockName.StartsWith("HardBlock1"))
+        {
+            blockObj.name = "HardBlock2";
+
+            if (blockSr != null && B.Length > 10)
+                blockSr.sprite = B[10];
+
+            if (S_HardBreak != null)
+                S_HardBreak.Play();
+
+            return;
+        }
+
+        if (blockName.StartsWith("HardBlock2") || blockName.StartsWith("Block"))
+        {
+            BreakBlock(blockObj, blockAni);
         }
     }
 
@@ -414,7 +422,10 @@ public class Paddle : MonoBehaviour
 
         for (int i = 0; i < Ball.Length; i++)
         {
-            if (Ball[i] == null || BallRg[i] == null || BallTr[i] == null)
+            if (Ball[i] == null || i >= BallRg.Length || i >= BallTr.Length)
+                continue;
+
+            if (BallRg[i] == null || BallTr[i] == null)
                 continue;
 
             if (Ball[i] == baseBall)
@@ -423,6 +434,7 @@ public class Paddle : MonoBehaviour
             Ball[i].SetActive(true);
             BallTr[i].position = basePos;
             BallRg[i].linearVelocity = Vector2.zero;
+            BallRg[i].angularVelocity = 0f;
             BallRg[i].AddForce(Random.insideUnitCircle.normalized * ballSpeed);
         }
     }
