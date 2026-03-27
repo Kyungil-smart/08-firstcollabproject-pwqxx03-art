@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Paddle
   - Block
+  - DeadLine
   layers:
   - Default
   - TransparentFX

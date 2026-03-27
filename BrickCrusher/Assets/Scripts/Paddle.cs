@@ -69,11 +69,7 @@ public class Paddle : MonoBehaviour
     void Start()
     {
         Time.timeScale = 1f;
-
-        if (PausePanel != null) PausePanel.SetActive(false);
-        if (victoryPanel != null) victoryPanel.SetActive(false);
-        if (GameOverPanel != null) GameOverPanel.SetActive(false);
-
+        HidePanels();
         UpdateUI();
         UpdateLifeUI();
         GenerateStage();
@@ -90,6 +86,18 @@ public class Paddle : MonoBehaviour
         MovePaddle();
         BallReadyPosition();
         StartBall();
+    }
+
+    void HidePanels()
+    {
+        if (PausePanel != null)
+            PausePanel.SetActive(false);
+
+        if (victoryPanel != null)
+            victoryPanel.SetActive(false);
+
+        if (GameOverPanel != null)
+            GameOverPanel.SetActive(false);
     }
 
     void HandlePause()
@@ -175,6 +183,9 @@ public class Paddle : MonoBehaviour
 
     public void BallOut(GameObject targetBall)
     {
+        if (isEnding)
+            return;
+
         if (targetBall != null)
             targetBall.SetActive(false);
 
@@ -210,6 +221,7 @@ public class Paddle : MonoBehaviour
         isStart = false;
         combo = 0;
 
+        HidePanels();
         DisableExtraBalls();
 
         yield return new WaitForSeconds(0.7f);
@@ -220,6 +232,8 @@ public class Paddle : MonoBehaviour
 
     void ResetBallState()
     {
+        HidePanels();
+
         DisableExtraBalls();
 
         if (Ball.Length > 0 && Ball[0] != null)
