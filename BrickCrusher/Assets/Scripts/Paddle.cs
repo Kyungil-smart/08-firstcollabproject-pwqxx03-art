@@ -156,13 +156,16 @@ public class Paddle : MonoBehaviour
         if (hitBall == null || hitRb == null)
             return;
 
-        Vector2 dir = (hitBall.position - transform.position).normalized;
+        float offset = hitBall.position.x - transform.position.x;
+        Vector2 dir = new Vector2(offset * 2f, 1f).normalized;
 
-        if (dir.y < 0.2f)
-            dir.y = 0.2f;
+        if (Mathf.Abs(dir.x) < 0.15f)
+            dir.x = dir.x >= 0 ? 0.15f : -0.15f;
 
-        hitRb.linearVelocity = Vector2.zero;
-        hitRb.AddForce(dir.normalized * ballSpeed);
+        dir.y = Mathf.Abs(dir.y);
+        dir = dir.normalized;
+
+        hitRb.linearVelocity = dir * ballSpeed;
 
         combo = 0;
 
@@ -293,20 +296,20 @@ public class Paddle : MonoBehaviour
 
         if (blockName.StartsWith("HardBlock2") || blockName.StartsWith("Block"))
         {
-            BreakBlock(blockObj, blockAni);
+            BreakBlock(blockObj);
         }
     }
 
-    void BreakBlock(GameObject blockObj, Animator blockAni)
+    void BreakBlock(GameObject blockObj)
     {
+        if (blockObj == null)
+            return;
+
         DropItem(blockObj.transform.position);
 
         combo++;
         score += combo > 3 ? 3 : combo;
         UpdateUI();
-
-        if (blockAni != null)
-            blockAni.SetTrigger("Break");
 
         if (S_Break != null)
             S_Break.Play();

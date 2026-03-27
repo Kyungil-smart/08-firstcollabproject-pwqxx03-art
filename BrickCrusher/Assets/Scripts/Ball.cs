@@ -28,11 +28,10 @@ public class Ball : MonoBehaviour
         if (speed <= 0.01f)
             return;
 
-        if (speed < minSpeed || speed > maxSpeed)
-        {
-            float targetSpeed = (minSpeed + maxSpeed) * 0.5f;
-            Rg.linearVelocity = Rg.linearVelocity.normalized * targetSpeed;
-        }
+        Vector2 dir = Rg.linearVelocity.normalized;
+        float targetSpeed = Mathf.Clamp(speed, minSpeed, maxSpeed);
+
+        Rg.linearVelocity = dir * targetSpeed;
     }
 
     void OnCollisionEnter2D(Collision2D col)
@@ -50,22 +49,10 @@ public class Ball : MonoBehaviour
 
         if (hitObject.CompareTag("Block"))
         {
-            if (col.contactCount > 0)
-            {
-                Vector2 normal = col.GetContact(0).normal;
-                Vector2 reflected = Vector2.Reflect(Rg.linearVelocity.normalized, normal);
-
-                if (reflected.y > -0.2f)
-                    reflected.y = -0.2f;
-
-                float targetSpeed = Mathf.Clamp(Rg.linearVelocity.magnitude, minSpeed, maxSpeed);
-                Rg.linearVelocity = reflected.normalized * targetSpeed;
-            }
-
             paddle.HitBlock(
                 hitObject,
                 hitObject.GetComponent<SpriteRenderer>(),
-                hitObject.GetComponent<Animator>()
+                null
             );
         }
     }
