@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class Paddle : MonoBehaviour
 {
@@ -48,9 +50,7 @@ public class Paddle : MonoBehaviour
     public float paddleSpeed = 8f;
     public float ballSpeed = 300f;
 
-    float oldBallSpeed = 300f;
     float paddleBorder = 2.262f;
-    float paddleSize = 1.58f;
     public float paddleX;
 
     int combo;
@@ -61,6 +61,21 @@ public class Paddle : MonoBehaviour
     Coroutine paddleSizeCoroutine;
     Camera mainCam;
 
+    // 패들의 시작 위치와 기본 크기를 저장한다.
+    Vector3 basePaddleScale;
+    Vector3 basePaddlePosition;
+    float basePaddleBorder = 2.262f;
+
+    // 같은 크기 아이템을 연속으로 먹어도 더 커지거나 더 작아지지 않게 상태를 저장한다.
+    enum PaddleSizeState
+    {
+        Normal,
+        Big,
+        Small
+    }
+
+    PaddleSizeState paddleSizeState = PaddleSizeState.Normal;
+
     void Awake()
     {
         mainCam = Camera.main;
@@ -69,9 +84,23 @@ public class Paddle : MonoBehaviour
     void Start()
     {
         Time.timeScale = 1f;
+
         HidePanels();
         UpdateUI();
         UpdateLifeUI();
+
+        // 패들 스케일이 0이면 화면에 안 보이고 콜라이더도 망가지므로 기본값으로 복구한다.
+        if (transform.localScale.x <= 0.01f || transform.localScale.y <= 0.01f)
+        {
+            transform.localScale = Vector3.one;
+        }
+
+        basePaddleScale = transform.localScale;
+        basePaddlePosition = transform.position;
+
+        SetPaddleSize(1f, 1f);
+        paddleSizeState = PaddleSizeState.Normal;
+
         GenerateStage();
         ResetBallState();
     }
@@ -85,6 +114,11 @@ public class Paddle : MonoBehaviour
 
         MovePaddle();
         BallReadyPosition();
+
+        // UI 위를 클릭할 때는 공 발사 입력을 무시한다.
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            return;
+
         StartBall();
     }
 
@@ -174,7 +208,6 @@ public class Paddle : MonoBehaviour
         dir = dir.normalized;
 
         hitRb.linearVelocity = dir * ballSpeed;
-
         combo = 0;
 
         if (S_Paddle != null)
@@ -197,6 +230,7 @@ public class Paddle : MonoBehaviour
                 activeBallCount++;
         }
 
+        // 아직 살아있는 공이 있으면 목숨을 깎지 않는다.
         if (activeBallCount > 0)
             return;
 
@@ -233,8 +267,19 @@ public class Paddle : MonoBehaviour
     void ResetBallState()
     {
         HidePanels();
-
         DisableExtraBalls();
+
+        // 라운드 초기화 시 패들 위치와 크기를 원래대로 돌린다.
+        transform.position = basePaddlePosition;
+
+        if (paddleSizeCoroutine != null)
+        {
+            StopCoroutine(paddleSizeCoroutine);
+            paddleSizeCoroutine = null;
+        }
+
+        paddleSizeState = PaddleSizeState.Normal;
+        SetPaddleSize(1f, 1f);
 
         if (Ball.Length > 0 && Ball[0] != null)
             Ball[0].SetActive(true);
@@ -382,17 +427,20 @@ public class Paddle : MonoBehaviour
         {
             case 0:
                 item.name = "Item_TripleBall";
-                if (sr != null && B.Length > 11) sr.sprite = B[11];
+                if (sr != null && B.Length > 11)
+                    sr.sprite = B[11];
                 break;
 
             case 1:
                 item.name = "Item_Big";
-                if (sr != null && B.Length > 12) sr.sprite = B[12];
+                if (sr != null && B.Length > 12)
+                    sr.sprite = B[12];
                 break;
 
             case 2:
                 item.name = "Item_Small";
-                if (sr != null && B.Length > 13) sr.sprite = B[13];
+                if (sr != null && B.Length > 13)
+                    sr.sprite = B[13];
                 break;
         }
 
@@ -420,11 +468,15 @@ public class Paddle : MonoBehaviour
                 break;
 
             case "Item_Big":
-                ApplyPaddleSize(2.42f, 1.963f);
+                // 이미 큰 상태면 더 커지지 않는다.
+                if (paddleSizeState != PaddleSizeState.Big)
+                    ApplyPaddleSize(PaddleSizeState.Big, 1.5f, 0.85f);
                 break;
 
             case "Item_Small":
-                ApplyPaddleSize(0.82f, 2.521f);
+                // 이미 작은 상태면 더 작아지지 않는다.
+                if (paddleSizeState != PaddleSizeState.Small)
+                    ApplyPaddleSize(PaddleSizeState.Small, 0.7f, 1.1f);
                 break;
         }
     }
@@ -467,34 +519,41 @@ public class Paddle : MonoBehaviour
         return null;
     }
 
-    void ApplyPaddleSize(float size, float border)
+    void ApplyPaddleSize(PaddleSizeState newState, float scaleMultiplier, float borderMultiplier)
     {
         if (paddleSizeCoroutine != null)
             StopCoroutine(paddleSizeCoroutine);
 
-        paddleSizeCoroutine = StartCoroutine(PaddleSizeRoutine(size, border));
+        paddleSizeCoroutine = StartCoroutine(PaddleSizeRoutine(newState, scaleMultiplier, borderMultiplier));
     }
 
-    IEnumerator PaddleSizeRoutine(float size, float border)
+    IEnumerator PaddleSizeRoutine(PaddleSizeState newState, float scaleMultiplier, float borderMultiplier)
     {
-        SetPaddleSize(size, border);
+        paddleSizeState = newState;
+        SetPaddleSize(scaleMultiplier, borderMultiplier);
+
         yield return new WaitForSeconds(7.5f);
-        SetPaddleSize(1.58f, 2.262f);
+
+        paddleSizeState = PaddleSizeState.Normal;
+        SetPaddleSize(1f, 1f);
         paddleSizeCoroutine = null;
     }
 
-    void SetPaddleSize(float size, float border)
+    // 패들 크기는 시작 시 저장한 기본 크기 기준 배수로 적용한다.
+    void SetPaddleSize(float scaleMultiplier, float borderMultiplier)
     {
-        Vector3 scale = transform.localScale;
-        scale.x = size;
+        Vector3 scale = basePaddleScale;
+        scale.x *= scaleMultiplier;
         transform.localScale = scale;
 
-        paddleSize = size;
-        paddleBorder = border;
+        paddleBorder = basePaddleBorder * borderMultiplier;
     }
 
     void GenerateStage()
     {
+        if (StageStr == null || StageStr.Length == 0)
+            return;
+
         if (stage < 1 || stage > StageStr.Length)
             return;
 
@@ -535,7 +594,14 @@ public class Paddle : MonoBehaviour
             }
             else
             {
-                spriteIndex = int.Parse(c.ToString());
+                int parsedIndex;
+                if (!int.TryParse(c.ToString(), out parsedIndex))
+                {
+                    block.SetActive(false);
+                    continue;
+                }
+
+                spriteIndex = parsedIndex;
             }
 
             block.name = blockName;
@@ -572,8 +638,19 @@ public class Paddle : MonoBehaviour
     {
         isEnding = true;
         isStart = false;
+        isPaused = false;
 
         DisableExtraBalls();
+
+        // 종료 시 크기 효과 제거
+        if (paddleSizeCoroutine != null)
+        {
+            StopCoroutine(paddleSizeCoroutine);
+            paddleSizeCoroutine = null;
+        }
+
+        paddleSizeState = PaddleSizeState.Normal;
+        SetPaddleSize(1f, 1f);
 
         if (ItemsTr != null)
         {
@@ -581,10 +658,16 @@ public class Paddle : MonoBehaviour
                 Destroy(ItemsTr.GetChild(i).gameObject);
         }
 
+        if (PausePanel != null)
+            PausePanel.SetActive(false);
+
         if (isVictory)
         {
             if (victoryPanel != null)
                 victoryPanel.SetActive(true);
+
+            if (GameOverPanel != null)
+                GameOverPanel.SetActive(false);
 
             if (S_Victory != null)
                 S_Victory.Play();
@@ -593,8 +676,35 @@ public class Paddle : MonoBehaviour
         {
             if (GameOverPanel != null)
                 GameOverPanel.SetActive(true);
+
+            if (victoryPanel != null)
+                victoryPanel.SetActive(false);
         }
 
         yield return null;
+    }
+
+    // 현재 씬 다시 시작
+    public void RestartGame()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    // 씬 이름으로 이동
+    public void LoadSceneByName(string sceneName)
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(sceneName);
+    }
+
+    // 종료 패널 닫기
+    public void HideEndPanels()
+    {
+        if (victoryPanel != null)
+            victoryPanel.SetActive(false);
+
+        if (GameOverPanel != null)
+            GameOverPanel.SetActive(false);
     }
 }
